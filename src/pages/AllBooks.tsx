@@ -1,27 +1,53 @@
+import { useDeleteBookMutation, useGetBooksQuery } from "../features/books/bookApi";
 import { LoaderCircle, Trash2, Pencil, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useGetBooksQuery } from "../features/books/bookApi";
 
-export default function AllBooks() {
-    // ✅ RTK Query hook to fetch all books
-    const { data: books, isLoading, isError, error } = useGetBooksQuery([]);
+const AllBooks = () => {
 
-    console.log(books)
+    // RTK QUERY HOOK
+    const { data: books, isLoading, isError } = useGetBooksQuery([]);
 
+    const [deleteBook] = useDeleteBookMutation();
+
+    // NAVIGATE
+    const navigate = useNavigate();
+
+
+    // HANDLE EDIT BOOK
+    const handleEdit = (id: string) => {
+        navigate(`/edit-book/${id}`);
+    };
+
+    // HANDLE DELETE BOOK
+    const handleDelete = async (id: string) => {
+        const confirm = window.confirm("Are you sure you want to delete this book?");
+        if (!confirm) return;
+        try {
+            await deleteBook(id).unwrap();
+            toast.success("Book deleted successfully.");
+        } catch (error) {
+            toast.error("Failed to delete the book.");
+        }
+    };
+
+
+    // LOADING STATE
     if (isLoading) {
         return (
-            <div className="text-center py-20">
-                <LoaderCircle className="mx-auto h-10 w-10 animate-spin text-blue-600" />
-                <p className="text-center text-2xl text-slate-500">Loading books...</p>
+            <div className="text-center py-60">
+                <LoaderCircle className="mx-auto h-10 w-10 animate-spin text-slate-600" />
+                <p className="text-slate-500 text-xl font-mono">Loading books...</p>
             </div>
         );
-    }
+    };
 
+
+    // ERROR STATE
     if (isError) {
         toast.error("Failed to load books!");
-        return <p className="text-red-600 text-2xl text-center">Error loading books.</p>;
-    }
+        return <p className="text-red-600 text-center text-xl font-mono">Error loading books.</p>;
+    };
 
     return (
         <div>
@@ -56,13 +82,21 @@ export default function AllBooks() {
                                     )}
                                 </td>
                                 <td className="p-3 border text-center space-x-2">
-                                    <Link to={`/edit-book/${book._id}`}>
+
+                                    {/* EDIT BUTTON  */}
+                                    <button onClick={() => handleEdit(book._id)}>
                                         <Pencil className="inline h-5 w-5 text-blue-500 hover:text-blue-700" />
-                                    </Link>
+                                    </button>
+
+
+                                    {/* BORROW BUTTON  */}
                                     <Link to={`/borrow/${book._id}`}>
                                         <BookOpen className="inline h-5 w-5 text-emerald-500 hover:text-emerald-700" />
                                     </Link>
-                                    <button onClick={() => toast("Delete logic coming soon")}>
+
+
+                                    {/* DELETE BUTTON  */}
+                                    <button onClick={() => handleDelete(book._id)}>
                                         <Trash2 className="inline h-5 w-5 text-red-500 hover:text-red-700" />
                                     </button>
                                 </td>
@@ -73,4 +107,5 @@ export default function AllBooks() {
             </div>
         </div>
     );
-}
+};
+export default AllBooks;

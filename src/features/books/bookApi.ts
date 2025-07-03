@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import type { BorrowSummaryResponse } from "../../types";
 
 
 export const bookApi = createApi({
@@ -11,15 +11,23 @@ export const bookApi = createApi({
     tagTypes: ["Books"],
 
     endpoints: (builder) => ({
+        // GET ALL BOOKS
         getBooks: builder.query({
             query: () => "/books",
-            providesTags: ["Books"]
+            transformResponse: (response: { data: any[] }) => response.data,
+            providesTags: ["Books"],
         }),
 
+
+        // GET BOOK BY ID
         getBookById: builder.query({
-            query: (id: string) => `/books/${id}`
+            query: (id: string) => `/books/${id}`,
+            transformResponse: (res: { data: any }) => res.data,
+            providesTags: ["Books"],
         }),
 
+
+        // CREATE A BOOK
         createBook: builder.mutation({
             query: (newBook) => ({
                 url: "/books",
@@ -30,16 +38,18 @@ export const bookApi = createApi({
         }),
 
 
+        // UPDATE A BOOK
         updateBook: builder.mutation({
-            query: ({ id, updateData }) => ({
+            query: ({ id, updatedData }) => ({
                 url: `/books/${id}`,
                 method: "PATCH",
                 body: updatedData,
             }),
-            invalidatesTags: ["Books"]
+            invalidatesTags: ["Books"],
         }),
 
 
+        // DELETE A BOOK
         deleteBook: builder.mutation({
             query: (id: string) => ({
                 url: `/books/${id}`,
@@ -49,17 +59,19 @@ export const bookApi = createApi({
         }),
 
 
+        // BORROW A BOOK
         borrowBook: builder.mutation({
-            query: ({ bookId, borrowData }) => ({
+            query: ({ bookId, quantity, dueDate }) => ({
                 url: `/borrow/${bookId}`,
                 method: "POST",
-                body: borrowData,
+                body: { quantity, dueDate },
             }),
             invalidatesTags: ["Books"],
         }),
 
 
-        getBorrowSummary: builder.query({
+        // GET ALL BORROW BOOK SUMMARY
+        getBorrowSummary: builder.query<BorrowSummaryResponse, void>({
             query: () => "/borrow-summary",
         }),
     })

@@ -1,20 +1,15 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
-export default function MainLayout() {
+
+const MainLayout = () => {
     return (
         <div className="min-h-screen flex flex-col">
-            {/* Navbar */}
-            <nav className="bg-white shadow p-4 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-blue-600">📚 Library App</h2>
-                <div className="space-x-4">
-                    <Link to="/books" className="text-blue-500 hover:underline">All Books</Link>
-                    <Link to="/create-book" className="text-blue-500 hover:underline">Add Book</Link>
-                    <Link to="/borrow-summary" className="text-blue-500 hover:underline">Borrow Summary</Link>
-                </div>
-            </nav>
+            {/* NAVBAR COMPONENT */}
+            <Navbar />
 
-            {/* Page Content */}
+            {/* PAGE CONTENT */}
             <main className="flex-grow p-6">
                 <Outlet />
             </main>
@@ -24,3 +19,4 @@ export default function MainLayout() {
         </div>
     );
 }
+export default MainLayout;
