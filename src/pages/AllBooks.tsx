@@ -2,24 +2,24 @@ import { useDeleteBookMutation, useGetBooksQuery } from "../features/books/bookA
 import { LoaderCircle, Trash2, Pencil, BookOpen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const AllBooks = () => {
+    const [page, setPage] = useState(1);
+    const limit = 10;
 
-    // RTK QUERY HOOK
-    const { data: books, isLoading, isError } = useGetBooksQuery([]);
+    // RTK QUERY HOOK with pagination
+    const { data, isLoading, isError } = useGetBooksQuery({ page, limit });
+    const books = data?.books || [];
+    const meta = data?.meta;
 
     const [deleteBook] = useDeleteBookMutation();
-
-    // NAVIGATE
     const navigate = useNavigate();
 
-
-    // HANDLE EDIT BOOK
     const handleEdit = (id: string) => {
         navigate(`/edit-book/${id}`);
     };
 
-    // HANDLE DELETE BOOK
     const handleDelete = async (id: string) => {
         const confirm = window.confirm("Are you sure you want to delete this book?");
         if (!confirm) return;
@@ -31,8 +31,14 @@ const AllBooks = () => {
         }
     };
 
+    const handlePrev = () => {
+        if (page > 1) setPage(prev => prev - 1);
+    };
 
-    // LOADING STATE
+    const handleNext = () => {
+        if (page < meta?.totalPages) setPage(prev => prev + 1);
+    };
+
     if (isLoading) {
         return (
             <div className="text-center py-60">
@@ -40,14 +46,12 @@ const AllBooks = () => {
                 <p className="text-slate-500 text-xl font-mono">Loading books...</p>
             </div>
         );
-    };
+    }
 
-
-    // ERROR STATE
     if (isError) {
         toast.error("Failed to load books!");
         return <p className="text-red-600 text-center text-xl font-mono">Error loading books.</p>;
-    };
+    }
 
     return (
         <div>
@@ -68,7 +72,11 @@ const AllBooks = () => {
                     </thead>
                     <tbody>
                         {books?.map((book: any) => (
-                            <tr key={book._id} className="hover:bg-gray-50">
+                            <tr
+                                key={book._id}
+                                className="hover:bg-gray-100 cursor-pointer"
+                                onClick={() => navigate(`/books/${book._id}`)}
+                            >
                                 <td className="p-3 border">{book.title}</td>
                                 <td className="p-3 border">{book.author}</td>
                                 <td className="p-3 border">{book.genre}</td>
@@ -81,21 +89,16 @@ const AllBooks = () => {
                                         <span className="text-red-600 font-semibold">No</span>
                                     )}
                                 </td>
-                                <td className="p-3 border text-center space-x-2">
-
-                                    {/* EDIT BUTTON  */}
+                                <td
+                                    className="p-3 border text-center space-x-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     <button onClick={() => handleEdit(book._id)}>
                                         <Pencil className="inline h-5 w-5 text-blue-500 hover:text-blue-700" />
                                     </button>
-
-
-                                    {/* BORROW BUTTON  */}
                                     <Link to={`/borrow/${book._id}`}>
                                         <BookOpen className="inline h-5 w-5 text-emerald-500 hover:text-emerald-700" />
                                     </Link>
-
-
-                                    {/* DELETE BUTTON  */}
                                     <button onClick={() => handleDelete(book._id)}>
                                         <Trash2 className="inline h-5 w-5 text-red-500 hover:text-red-700" />
                                     </button>
@@ -104,6 +107,27 @@ const AllBooks = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-4 space-x-4">
+                <button
+                    onClick={handlePrev}
+                    disabled={page === 1}
+                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                >
+                    Prev
+                </button>
+                <span className="text-lg font-semibold">
+                    Page {page} of {meta?.totalPages || 1}
+                </span>
+                <button
+                    onClick={handleNext}
+                    disabled={page === meta?.totalPages}
+                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

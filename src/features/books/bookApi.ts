@@ -11,10 +11,13 @@ export const bookApi = createApi({
     tagTypes: ["Books"],
 
     endpoints: (builder) => ({
-        // GET ALL BOOKS
+        // GET ALL BOOKS WITH PAGINATION
         getBooks: builder.query({
-            query: () => "/books",
-            transformResponse: (response: { data: any[] }) => response.data,
+            query: ({ page = 1, limit = 10 }) => `/books?page=${page}&limit=${limit}`,
+            transformResponse: (response: { data: any[]; meta: any }) => ({
+                books: response.data,
+                meta: response.meta,
+            }),
             providesTags: ["Books"],
         }),
 
