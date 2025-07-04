@@ -7,9 +7,17 @@ A minimalist, responsive library management web application built with **React**
 ## 🚀 Live Demo
 
 Frontend: [https://your-frontend-url.com](https://your-frontend-url.com)  
-Backend: [https://your-backend-url.com](https://your-backend-url.com)
+Backend: [https://library-management-api-nine-plum.vercel.app/](https://library-management-api-nine-plum.vercel.app/)
 
 ---
+
+## 🧑‍💻 Code Demo
+
+Frontend: [https://github.com/sujoncoder/Library_Management-Frontend](https://github.com/sujoncoder/Library_Management-Frontend)  
+Backend: [https://github.com/sujoncoder/Library-Management-API](https://github.com/sujoncoder/Library-Management-API)
+
+---
+
 
 ## 🧰 Tech Stack
 
