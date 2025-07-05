@@ -40,7 +40,10 @@ const AddBook = () => {
             toast.success("Book added successfully!");
             navigate("/books");
         } catch (error: any) {
-            toast.error("Failed to add book.", error.message);
+            const customMessage =
+                error?.data?.error?.message || "Failed to add book.";
+
+            toast.error(customMessage);
         }
     };
 

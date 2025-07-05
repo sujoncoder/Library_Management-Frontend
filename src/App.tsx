@@ -1,5 +1,5 @@
-import { Toaster } from "sonner";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import MainLayout from "./layouts/MainLayout";
 import AllBooks from "./pages/AllBooks";
 import AddBook from "./pages/AddBook";
@@ -11,7 +11,7 @@ import BookDetails from "./pages/BookDetails";
 const App = () => {
   return (
     <>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-center" />
 
       <Routes>
         <Route path="/" element={<MainLayout />}>
@@ -28,4 +28,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
