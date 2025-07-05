@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useGetBookByIdQuery, useBorrowBookMutation } from "../features/books/bookApi";
 import { toast } from "sonner";
+import Loading from "../components/Loading";
+
 
 const BorrowBook = () => {
     const { bookId } = useParams<{ bookId: string }>();
@@ -54,40 +56,51 @@ const BorrowBook = () => {
 
 
     // LOADING STATE
-    if (isLoading) return <p className="text-center text-xl font-mono text-slate-500">Loading book info...</p>;
+    if (isLoading) return <Loading message="Loading borrow book..." fullPage={false} />
 
 
     return (
-        <div className="max-w-xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">📖 Borrow: {book?.title}</h2>
+        <div className="max-w-2xl mx-auto p-6 md:p-10 bg-white rounded-2xl shadow-md border border-gray-200 mt-6">
+            <h2 className="text-2xl font-bold  mb-6 flex items-center gap-2">
+                📖 <span className="text-slate-500">Borrow: {book?.title}</span>
+            </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
+                {/* AVAILABLE COPIES */}
                 <div>
-                    <label className="block font-medium">Available Copies: {book.copies}</label>
+                    <label className="block text-gray-600 font-medium mb-1">
+                        Available Copies: <span className="font-semibold text-black">{book?.copies}</span>
+                    </label>
                 </div>
 
+                {/* QUANTITY INPUT */}
                 <input
-                    className="w-full border p-2 rounded"
+                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="number"
                     name="quantity"
+                    placeholder="Quantity"
                     value={formData.quantity}
                     onChange={handleChange}
                     min={1}
-                    max={book.copies}
+                    max={book?.copies}
+                    required
                 />
 
+                {/* DUE DATE INPUT */}
                 <input
-                    className="w-full border p-2 rounded"
+                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="date"
                     name="dueDate"
                     value={formData.dueDate}
                     onChange={handleChange}
+                    required
                 />
 
+                {/* SUBMIT BUTTON */}
                 <button
                     type="submit"
                     disabled={isBorrowing}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200"
                 >
                     {isBorrowing ? "Borrowing..." : "Borrow Book"}
                 </button>

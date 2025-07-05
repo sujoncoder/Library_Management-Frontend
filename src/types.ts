@@ -29,3 +29,8 @@ export interface ICustomErrorResponse {
         };
     };
 };
+
+export interface ILoadingProps {
+    message?: string;
+    fullPage?: boolean;
+};

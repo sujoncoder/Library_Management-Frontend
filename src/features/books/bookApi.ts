@@ -8,7 +8,7 @@ export const bookApi = createApi({
         baseUrl: "https://library-management-api-nine-plum.vercel.app/api"
     }),
 
-    tagTypes: ["Books"],
+    tagTypes: ["Books", "BorrowSummary"],
 
     endpoints: (builder) => ({
         // GET ALL BOOKS WITH PAGINATION
