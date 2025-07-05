@@ -26,7 +26,7 @@ const AllBooks = () => {
         try {
             await deleteBook(id).unwrap();
             toast.success("Book deleted successfully.");
-        } catch (error) {
+        } catch (error: unknown) {
             toast.error("Failed to delete the book.");
         }
     };

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type { BookFormData } from "../types";
 
 const EditBook = () => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
 
     // NAVIGATE
     const navigate = useNavigate();
@@ -15,10 +15,11 @@ const EditBook = () => {
         data: book,
         isLoading,
         isError,
-    } = useGetBookByIdQuery(id);
+    } = useGetBookByIdQuery(id as string);
+
+
 
     const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
-
 
     // HANDLE FORM STATE
     const [formData, setFormData] = useState<BookFormData>({
@@ -49,7 +50,10 @@ const EditBook = () => {
 
     // HANDLE FORM CHANGE
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, type } = e.target;
+
+        const checked = type === "checkbox" && "checked" in e.target ? (e.target as HTMLInputElement).checked : undefined;
+
         setFormData((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,

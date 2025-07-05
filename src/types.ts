@@ -20,3 +20,12 @@ export type BookFormData = {
     copies: number;
     available: boolean;
 };
+
+
+export interface ICustomErrorResponse {
+    data?: {
+        error?: {
+            message?: string;
+        };
+    };
+};

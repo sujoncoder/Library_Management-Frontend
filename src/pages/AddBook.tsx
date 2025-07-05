@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateBookMutation } from "../features/books/bookApi";
-import type { BookFormData } from "../types";
+import type { BookFormData, ICustomErrorResponse } from "../types";
+
+
 
 const AddBook = () => {
 
@@ -23,13 +25,19 @@ const AddBook = () => {
     });
 
     // HANDLE FORM CHANGE
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value, type, checked } = e.target;
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value, type } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]:
+                type === "checkbox"
+                    ? (e.target as HTMLInputElement).checked
+                    : value,
         }));
     };
+
 
 
     // HANDLE SUBMIT FORM
@@ -39,12 +47,13 @@ const AddBook = () => {
             await createBook(formData).unwrap();
             toast.success("Book added successfully!");
             navigate("/books");
-        } catch (error: any) {
+        } catch (error: unknown) {
             const customMessage =
-                error?.data?.error?.message || "Failed to add book.";
+                (error as ICustomErrorResponse)?.data?.error?.message || "Failed to add book.";
 
             toast.error(customMessage);
         }
+
     };
 
 

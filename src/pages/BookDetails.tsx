@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { useGetBookByIdQuery } from "../features/books/bookApi";
 
 const BookDetails = () => {
-    const { id } = useParams();
-    const { data: book, isLoading, isError } = useGetBookByIdQuery(id);
+    const { id } = useParams<{ id: string }>();
+    const { data: book, isLoading, isError } = useGetBookByIdQuery(id!, { skip: !id });
+
 
     if (isLoading) return <p className="text-center mt-10">Loading...</p>;
     if (isError || !book) return <p className="text-center mt-10 text-red-600">Book not found</p>;

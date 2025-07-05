@@ -4,14 +4,15 @@ import { useGetBookByIdQuery, useBorrowBookMutation } from "../features/books/bo
 import { toast } from "sonner";
 
 const BorrowBook = () => {
-    const { bookId } = useParams();
+    const { bookId } = useParams<{ bookId: string }>();
+
+    // RTK QUERY HOOK
+    const { data: book, isLoading } = useGetBookByIdQuery(bookId!, { skip: !bookId });
+    const [borrowBook, { isLoading: isBorrowing }] = useBorrowBookMutation();
+
 
     // NAVIGATE
     const navigate = useNavigate();
-
-    // RTK QUERY HOOK
-    const { data: book, isLoading } = useGetBookByIdQuery(bookId);
-    const [borrowBook, { isLoading: isBorrowing }] = useBorrowBookMutation();
 
 
     // HANDLE BORROW BOOK FORM STATE
